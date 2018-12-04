@@ -13,14 +13,14 @@ namespace RESTFulAPIConsole.Services
         /// Pobiera wszystkie Company
         /// </summary>
         /// <returns>IList<Company></returns>
-        IList<Company> getAllCompany();
-        Int64 createCompany(Company entityToAdd);
+        ServiceOperationResult GetAllCompanies();
+        ServiceOperationResult CreateCompany(Company entityToAdd);
 
-        IList<Company> seachCompanies(CompanySearchCriteria searchCriteria);
+        ServiceOperationResult SearchCompanies(CompanySearchCriteria searchCriteria);
 
-        bool updateCompany(Company entityToPersist, Int64 id);
+        ServiceOperationResult UpdateCompany(Company entityToPersist, Int64 id);
 
-        void deleteCompany(Company entityToDelete);
+        ServiceOperationResult DeleteCompanyWithEmployees(Int64 id);
 
     }
 }

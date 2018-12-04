@@ -8,9 +8,9 @@ namespace PumoxRESTFulAPI.Model
 {
     public class CompanySearchCriteria
     {
-        public string Keyword { get; set; }
-        public DateTime? EmployeeDateOfBirthFrom { get; set; }
-        public DateTime? EmployeeDateOfBirthTo { get; set; }
-        public string EmployeeJobTitles { get; set; }
+        public virtual string Keyword { get; set; }
+        public virtual DateTime? EmployeeDateOfBirthFrom { get; set; }
+        public virtual DateTime? EmployeeDateOfBirthTo { get; set; }
+        public virtual string EmployeeJobTitles { get; set; }
     }
 }

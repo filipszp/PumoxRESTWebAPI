@@ -97,10 +97,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\CompanyController.cs" />
+    <Compile Include="Filters\BasicAuthenticationFilter.cs" />
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\CompanySearchCriteria.cs" />
     <Compile Include="Model\Employee.cs" />
     <Compile Include="Model\NHibernateHelper.cs" />
+    <Compile Include="Model\ServiceOperationResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AbstractService.cs" />

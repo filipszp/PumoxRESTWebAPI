@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin;
 using Owin;
+using PumoxRESTFulAPI.Filters.Filters;
 using System.Web.Http;
 
 [assembly: OwinStartup(typeof(RESTFulAPIConsole.Startup))]
@@ -18,6 +19,8 @@ namespace RESTFulAPIConsole
                 routeTemplate: "{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            
+            config.Filters.Add(new BasicAuthenticationFilter());
             app.UseWebApi(config);
         }
     }

@@ -28,11 +28,11 @@ namespace RESTFulAPIConsole.Model
             public EmployeeMap()
             {
                 Id(x => x.Id);
-                Map(x => x.FirstName).Not.Nullable();
-                Map(x => x.LastName).Not.Nullable();
-                Map(x => x.DateOfBirth).Not.Nullable();
-                Map(x => x.Company_Id).Not.Nullable();
-                Map(x => x.JobTitle).Not.Nullable();
+                Map(x => x.FirstName);
+                Map(x => x.LastName);
+                Map(x => x.DateOfBirth);
+                Map(x => x.Company_Id);
+                Map(x => x.JobTitle);
                 Table("[Employee]");
             }
         }

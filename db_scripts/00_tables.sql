@@ -39,7 +39,7 @@ insert into [Company]([CompanyName],[EstablishmentYear]) values('Company 1',2010
 GO
 insert into [Company]([CompanyName],[EstablishmentYear]) values('Company 2',2015);
 GO
-insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Kowaliski','Jan',CONVERT(DATETIME, '01-21-74', 10),'Manager',1);
+insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Kowalski','Jan',CONVERT(DATETIME, '01-21-74', 10),'Manager',50);
 GO
 insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Nowak','Jan',CONVERT(DATETIME, '03-10-79', 10),'Administrator',1);
 GO

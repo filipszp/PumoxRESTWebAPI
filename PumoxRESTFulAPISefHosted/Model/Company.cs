@@ -27,16 +27,15 @@ namespace RESTFulAPIConsole.Model
             public CompanyMap()
             {
                 Id(x => x.Id);
-                Map(x => x.CompanyName).Not.Nullable();
-                Map(x => x.EstablishmentYear).Not.Nullable();
+                Map(x => x.CompanyName);
+                Map(x => x.EstablishmentYear);
                 HasMany(x => x.Employees)
+                    .Inverse()
                     .KeyColumn("Company_Id");
                 Table("[Company]");
 
             }
         }
-
-
         ///<summary>
         ///Walidacja obligatorności pól z Request'a 
         ///Zabezpieczenie przed pustym Stringiem z JSONa oraz podsawieniem 0 dla Int32
@@ -53,6 +52,7 @@ namespace RESTFulAPIConsole.Model
                 if (String.IsNullOrEmpty(e.FirstName)) res = false;
                 if (String.IsNullOrEmpty(e.LastName)) res = false;
                 if (String.IsNullOrEmpty(e.JobTitle)) res = false;
+                if (e.DateOfBirth.Day == 1 && e.DateOfBirth.Month == 1 && e.DateOfBirth.Year == 1) res = false;
             });
 
             return res;
