@@ -18,7 +18,7 @@ namespace RESTFulAPIConsole.Services
 
         IList<Company> seachCompanies(CompanySearchCriteria searchCriteria);
 
-        void updateCompany(Company entityToPersist);
+        bool updateCompany(Company entityToPersist, Int64 id);
 
         void deleteCompany(Company entityToDelete);
 

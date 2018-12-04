@@ -1,4 +1,6 @@
-<!--POST localhost:8080/company/create -->
+<!--GET http://localhost:8080/company/GetCompanies -->
+
+<!--POST http://localhost:8080/company/create -->
 
 {
     "CompanyName": "company without emp",
@@ -26,4 +28,27 @@
     ]
 }
 
-<!--POST localhost:8080/company/create -->
+{
+    "CompanyName": "company without emp",
+    "Employees": [
+    ]
+}
+
+<!--PUT http://localhost:8080/company/update/{id} -->
+ "CompanyName": "created By POST",
+    "EstablishmentYear": 2015,
+    "Employees": [
+        {
+            "FirstName": "Scott",
+            "LastName": "Tiger",
+			 "DateOfBirth": "1970-01-15",
+            "JobTitle": "Developer"
+        },
+        {
+            "FirstName": "John",
+            "LastName": "Newton",
+            "DateOfBirth": "1982-01-25",
+            "JobTitle": "Administrator"
+        }
+    ]
+}

@@ -15,7 +15,7 @@ namespace RESTFulAPIConsole
             HttpConfiguration config = new HttpConfiguration();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "{controller}/{action}",
+                routeTemplate: "{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
             app.UseWebApi(config);

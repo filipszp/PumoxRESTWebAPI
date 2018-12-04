@@ -31,17 +31,19 @@ namespace RESTFulAPIConsole.Controller
                 response = Request.CreateResponse<long>(HttpStatusCode.Created, id);
             else
                 response = Request.CreateErrorResponse(HttpStatusCode.BadRequest,"Bad data request");
-
             return response;
-
         }
 
         [HttpPut]
-        public HttpResponseMessage Update()
+        [Route("company/update/{id}", Name ="Id")]
+        public HttpResponseMessage Update(Int64 Id, [FromBody]Company company)
         {
-            Console.WriteLine("[HttpPut] -> /company/update");
-            // Int64 id = companyService.createCompany(company);
-            var response = Request.CreateResponse<long>(HttpStatusCode.OK, 1);
+            Console.WriteLine("[HttpPut] -> /company/update/"+Id);
+            var response = new HttpResponseMessage();
+            if (companyService.updateCompany(company,Id))
+                response = Request.CreateResponse(HttpStatusCode.OK);
+            else
+                response = Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Bad data request");
             return response;
 
         }

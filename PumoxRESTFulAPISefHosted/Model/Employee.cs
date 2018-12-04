@@ -4,7 +4,7 @@ using System;
 namespace RESTFulAPIConsole.Model
 {
     ///<summary>
-    ///Encja  tabeli Employee
+    ///Encja  tabeli <see cref="Employee"/>
     ///</summary>
     public class Employee
     {

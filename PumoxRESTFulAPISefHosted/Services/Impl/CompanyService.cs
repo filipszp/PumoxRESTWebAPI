@@ -39,9 +39,59 @@ namespace RESTFulAPIConsole.Services
             return companyId;
         }
 
-        public void updateCompany(Company entityToPersist)
+        public bool updateCompany(Company entityToPersist, Int64 id)
         {
-            base.saveEntity(entityToPersist);
+            if (entityToPersist.validateObligatoryField())
+            {
+                using (var session = NHibernateHelper.OpenSession())
+                {
+                    // try
+                    //  {
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        var findCompany = session.Query<Company>()
+                        .Fetch(t => t.Employees)
+                        .Where(t => t.Id == id)
+                        .FirstOrDefault<Company>();
+
+                        if (findCompany != null)
+                        {
+                            findCompany.CompanyName = entityToPersist.CompanyName;
+                            findCompany.EstablishmentYear = entityToPersist.EstablishmentYear;
+                            
+                            //usuwanie pracownikow z encji Company i zalozenie nowych z Requesta
+                            if (entityToPersist.Employees.Count > 0)
+                            {
+                                findCompany.Employees.ToList().ForEach(empToDel =>
+                                {
+                                    session.Delete(empToDel);
+                                });
+                                entityToPersist.Employees.ToList().ForEach(emp =>
+                                {
+                                    emp.Company_Id = findCompany.Id;
+                                    session.Save(emp);
+                                });
+                                //findCompany.Employees.Clear();
+                                //findCompany.Employees.ToList().AddRange(entityToPersist.Employees);
+                            }
+                            session.SaveOrUpdate(findCompany);
+                            transaction.Commit();
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    // }
+                    //  catch
+                    //  {
+                    //      return false;
+                    // }
+                }
+            }
+            else
+                return false;
         }
 
         public void deleteCompany(Company entityToDelete)
