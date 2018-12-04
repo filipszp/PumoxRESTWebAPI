@@ -1,22 +1,20 @@
 ﻿using FluentNHibernate.Mapping;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RESTFulAPIConsole.Model
 {
+    ///<summary>
+    ///Encja  tabeli Employee
+    ///</summary>
     public class Employee
     {
-        public virtual long Id { get; set; }
+        public virtual Int64 Id { get; set; }
         public virtual string FirstName { get; set; }
         public virtual string LastName { get; set; }
         public virtual System.DateTime DateOfBirth { get; set; }
-        public virtual int Company_Id { get; set; }
-        //public virtual Company Company { get; set; }
-
-        public enum JobTitle : int
+        public virtual Int64 Company_Id { get; set; }
+        public virtual string JobTitle { get; set; }
+        public enum JobTitleEnum : int
         {
             Administrator,
             Developer,
@@ -24,22 +22,19 @@ namespace RESTFulAPIConsole.Model
             Manager
         }
 
-    
-        public  class EmployeeMap : ClassMap<Employee>
+
+        public class EmployeeMap : ClassMap<Employee>
         {
             public EmployeeMap()
             {
                 Id(x => x.Id);
-                Map(x => x.FirstName);
-                Map(x => x.LastName);
-                Map(x => x.DateOfBirth);
-                Map(x => x.Company_Id);
-                //References(x => x.Company);
-                //  .Column("Company_Id");
+                Map(x => x.FirstName).Not.Nullable();
+                Map(x => x.LastName).Not.Nullable();
+                Map(x => x.DateOfBirth).Not.Nullable();
+                Map(x => x.Company_Id).Not.Nullable();
+                Map(x => x.JobTitle).Not.Nullable();
                 Table("[Employee]");
             }
         }
-
-       
     }
 }

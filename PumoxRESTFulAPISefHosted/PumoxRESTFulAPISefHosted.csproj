@@ -105,7 +105,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AbstractService.cs" />
     <Compile Include="Services\IAbstractService.cs" />
-    <Compile Include="Services\Impl\EmployeeService.cs" />
     <Compile Include="Services\Impl\CompanyService.cs" />
     <Compile Include="Services\IRESTService.cs" />
     <Compile Include="Services\ICompanyService.cs" />

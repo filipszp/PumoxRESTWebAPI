@@ -1,5 +1,11 @@
 ﻿delete from [Employee]
+GO
 delete from [Company]
+GO
+drop table [Employee]
+GO
+drop table [Company]
+GO
 
 CREATE TABLE [Company] (
   [Id] BIGINT IDENTITY (1,1)  NOT NULL,
@@ -15,7 +21,7 @@ CREATE TABLE [Employee] (
   [Id] BIGINT IDENTITY (1,1)  NOT NULL,
   [FirstName] nvarchar(100)  NOT NULL,
   [LastName] nvarchar(100) NOT NULL,
-  [DateOfBirth] datetime NOT NULL,
+  [DateOfBirth] datetime,
   [JobTitle] nvarchar(50) NOT NULL,
   [Company_Id] BIGINT NOT NULL
 );
@@ -28,12 +34,15 @@ ADD CONSTRAINT FK_Employee_Company_Id FOREIGN KEY (Company_Id)
 GO
 
 
+
+insert into [Company]([CompanyName],[EstablishmentYear]) values('Company 1',2010);
+GO
 insert into [Company]([CompanyName],[EstablishmentYear]) values('Company 2',2015);
 GO
-insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Kowaliski','Jan',CONVERT(DATETIME, '01-21-74', 10),'Manager',2);
-GO
-insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Nowak','Jan',CONVERT(DATETIME, '03-10-79', 10),'Administrator',2);
+insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Kowaliski','Jan',CONVERT(DATETIME, '01-21-74', 10),'Manager',1);
 GO
 insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Nowak','Jan',CONVERT(DATETIME, '03-10-79', 10),'Administrator',1);
+GO
+insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Scott','Tiger',CONVERT(DATETIME, '01-08-80', 10),'Developer',2);
 GO
 

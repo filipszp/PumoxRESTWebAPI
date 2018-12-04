@@ -7,7 +7,6 @@ namespace RESTFulAPIConsole.Model
 {
     public sealed class NHibernateHelper
     {
-
         private static ISessionFactory _sessionFactory;
 
         private static ISessionFactory SessionFactory
@@ -23,13 +22,11 @@ namespace RESTFulAPIConsole.Model
 
         private static ISessionFactory CreateSessionFactory()
         {
-
-
             _sessionFactory = Fluently.Configure()
                  .Database(FluentNHibernate.Cfg.Db.MsSqlCeConfiguration.Standard.ShowSql()
                  .ConnectionString(c => c.FromConnectionStringWithKey("DbConnectionString")))
-                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Company.CompanyMap>().Conventions.Add(DefaultLazy.Always()))
-                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Employee.EmployeeMap>())
+                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Company.CompanyMap>().Conventions.Add(DefaultCascade.Merge()))  //
+                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Employee.EmployeeMap>().Conventions.Add(DefaultCascade.Merge())) //.Conventions.Add(DefaultCascade.All())
                  .BuildSessionFactory();
 
 

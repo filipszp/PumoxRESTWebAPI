@@ -7,12 +7,16 @@ using System.Collections.Generic;
 
 namespace RESTFulAPIConsole.Services
 {
-    public interface ICompanyService
+    public interface ICompanyService<Company>
     {
+        /// <summary>
+        /// Pobiera wszystkie Company
+        /// </summary>
+        /// <returns>IList<Company></returns>
+        IList<Company> getAllCompany();
+        Int64 createCompany(Company entityToAdd);
 
-        int createCompany(Company entityToAdd);
-
-        IList seachCompanies(CompanySearchCriteria searchCriteria);
+        IList<Company> seachCompanies(CompanySearchCriteria searchCriteria);
 
         void updateCompany(Company entityToPersist);
 

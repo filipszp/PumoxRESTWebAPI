@@ -1,10 +1,7 @@
-﻿using NHibernate;
-using NHibernate.Linq;
-using RESTFulAPIConsole.Model;
+﻿using RESTFulAPIConsole.Model;
 using RESTFulAPIConsole.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -13,33 +10,38 @@ namespace RESTFulAPIConsole.Controller
 {
     public class CompanyController : ApiController
     {
-
         private CompanyService companyService = new CompanyService();
-        public IList<Company> GetCompany()
+
+        [HttpGet]
+        [Route("GetCompanies")]
+        public IList<Company> GetCompanies()
         {
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                var list = session.Query<Company>()
-                    .Fetch(t => t.Employees)
-                    .OrderByDescending(t => t.EstablishmentYear)
-                    .ToList<Company>();
-
-                //                var list2 = (from c in session.Query<Company>() select c).ToList<Company>();
-
-                //              IQuery sqlQuery = session.CreateSQLQuery("SELECT * FROM [Company]").AddEntity(typeof(Company));
-
-                //            var list3 = sqlQuery.List<Company>();
-                return list;
-            }
+            Console.WriteLine("[HttpGet] -> /company/GetCompanies");
+            return companyService.getAllCompany();
         }
 
 
-        [HttpPost,]
+        [HttpPost]
         public HttpResponseMessage Create(Company company)
         {
-            long id = companyService.createCompany(company);
-            var response = Request.CreateResponse<long>(HttpStatusCode.Created, id);
+            Console.WriteLine("[HttpPost] -> /company/create");
+            var response = new HttpResponseMessage();
+            Int64 id = companyService.createCompany(company);
+            if (id != 0)
+                response = Request.CreateResponse<long>(HttpStatusCode.Created, id);
+            else
+                response = Request.CreateErrorResponse(HttpStatusCode.BadRequest,"Bad data request");
 
+            return response;
+
+        }
+
+        [HttpPut]
+        public HttpResponseMessage Update()
+        {
+            Console.WriteLine("[HttpPut] -> /company/update");
+            // Int64 id = companyService.createCompany(company);
+            var response = Request.CreateResponse<long>(HttpStatusCode.OK, 1);
             return response;
 
         }
