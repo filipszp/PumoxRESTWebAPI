@@ -13,16 +13,8 @@ namespace RESTFulAPIConsole.Model
         public virtual string LastName { get; set; }
         public virtual System.DateTime DateOfBirth { get; set; }
         public virtual Int64 Company_Id { get; set; }
-        public virtual string JobTitle { get; set; }
-        public enum JobTitleEnum : int
-        {
-            Administrator,
-            Developer,
-            Architect,
-            Manager
-        }
-
-
+        public virtual JobTitleEnum JobTitle { get; set; }
+    
         public class EmployeeMap : ClassMap<Employee>
         {
             public EmployeeMap()
@@ -32,9 +24,18 @@ namespace RESTFulAPIConsole.Model
                 Map(x => x.LastName);
                 Map(x => x.DateOfBirth);
                 Map(x => x.Company_Id);
-                Map(x => x.JobTitle);
+                Map(x => x.JobTitle).CustomType<GenericEnumMapper<JobTitleEnum>>();
+                ImportType<JobTitleEnum>();
                 Table("[Employee]");
             }
         }
+    }
+
+    public enum JobTitleEnum
+    {
+        Administrator,
+        Developer,
+        Architect,
+        Manager
     }
 }

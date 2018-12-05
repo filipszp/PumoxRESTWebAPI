@@ -51,7 +51,7 @@ namespace RESTFulAPIConsole.Model
             {
                 if (String.IsNullOrEmpty(e.FirstName)) res = false;
                 if (String.IsNullOrEmpty(e.LastName)) res = false;
-                if (String.IsNullOrEmpty(e.JobTitle)) res = false;
+                if (String.IsNullOrEmpty(e.JobTitle.ToString())) res = false;
                 if (e.DateOfBirth.Day == 1 && e.DateOfBirth.Month == 1 && e.DateOfBirth.Year == 1) res = false;
             });
 

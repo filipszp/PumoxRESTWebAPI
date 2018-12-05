@@ -46,3 +46,22 @@ GO
 insert into [Employee]([FirstName],[LastName],[DateOfBirth],[JobTitle],[Company_Id]) values('Scott','Tiger',CONVERT(DATETIME, '01-08-80', 10),'Developer',2);
 GO
 
+
+
+
+"Keyword": "<string>",
+"EmployeeDateOfBirthFrom": "<DateTime?>",
+"EmployeeDateOfBirthTo": "<DateTime?>",
+"EmployeeJobTitles": [“<string(enum)>”, …]
+
+select * from Company left outer join Employee on Company.Id=Employee.Company_Id
+where (CompanyName like '%imie%'
+   OR FirstName like '%imie%'
+   OR LastName  like '%imie%');
+
+SELECT this_.Id as id1_0_1_, this_.CompanyName as companyname2_0_1_, this_.EstablishmentYear as establishmentyear3_0_1_, e1_.Id as id1_1_0_, e1_.FirstName as firstname2_1_0_, e1_.LastName as lastname3_1_0_, e1_.DateOfBirth as dateofbirth4_1_0_, e1_.Company_Id as company5_1_0_, e1_.JobTitle as jobtitle6_1_0_ FROM [Company] this_ inner join [Employee] e1_ on this_.Id=e1_.Company_Id WHERE (this_.CompanyName like @p0 or e1_.FirstName like @p1 or e1_.LastName like @p2);@p0 = '%pier%' [Type: String (0:0:0)], @p1 = '%pier%' [Type: String (0:0:0)], @p2 = '%pier%' [Type: String (0:0:0)]
+
+
+
+
+ select Company.Id ,Employee.Id, CompanyName,EstablishmentYear,FirstName,LastName,DateOfBirth , Company_Id , JobTitle from Company left outer join Employee  on Company.Id=Company_Id where CompanyName like '%imie%'

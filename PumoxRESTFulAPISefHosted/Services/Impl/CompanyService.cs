@@ -143,35 +143,75 @@ namespace RESTFulAPIConsole.Services
             {
                 using (var session = NHibernateHelper.OpenSession())
                 {
+                    ICriterion crCompanyName, crFirstName, crLastName;
 
-                    //var findCompany = session.CreateQuery(
-                    //    "from Company as c left outer join c.Employees as e " +
-                    //    "where c.CompanyName like '%pier%' ");
+                    ICriterion crKeywordOr = null;
+                    ICriterion crDateBetween = null;
+                    ICriterion crJobTitle = null;
 
+                    ICriterion crAllOr = null;
 
-
-                    ICriterion crCompanyName = Restrictions.Like("c.CompanyName", "%imie%");
-                    ICriterion crFirstName = Restrictions.Like("e.FirstName", "%imie%");
-                    ICriterion crLastName = Restrictions.Like("e.LastName", "%imie%");
-                    ICriterion crDateBetween = Restrictions.Between("e.DateOfBirth","1975-01-01","2010-01-01");
+                    if (!String.IsNullOrEmpty(searchCriteria.Keyword))
+                    {
+                        crCompanyName = Restrictions.Like("c.CompanyName", searchCriteria.Keyword);
+                        crFirstName = Restrictions.Like("e.FirstName", searchCriteria.Keyword);
+                        crLastName = Restrictions.Like("e.LastName", searchCriteria.Keyword);
+                        crKeywordOr = Restrictions.Disjunction()
+                            .Add(crCompanyName)
+                            .Add(crFirstName)
+                            .Add(crLastName);
+                    }
+                    if (!String.IsNullOrEmpty(searchCriteria.EmployeeJobTitles))
+                        crJobTitle = Restrictions.Eq("e.JobTitle", searchCriteria.EmployeeJobTitles);
                     
-                    var orRestriction = Restrictions.Disjunction()
-                        .Add(crCompanyName)
-                        .Add(crFirstName)
-                        .Add(crLastName);
-                    var andRestriction = Restrictions.And(orRestriction, crDateBetween);
+                    if (searchCriteria.EmployeeDateOfBirthFrom.HasValue && searchCriteria.EmployeeDateOfBirthTo.HasValue)
+                        crDateBetween = Restrictions.Between("e.DateOfBirth", searchCriteria.EmployeeDateOfBirthFrom.Value, searchCriteria.EmployeeDateOfBirthTo.Value);
+
+                    if (crKeywordOr != null && crJobTitle != null && crDateBetween != null)
+                    {
+                        crAllOr = Restrictions.Disjunction()
+                            .Add(crKeywordOr)
+                            .Add(crJobTitle)
+                            .Add(crDateBetween);
+                    }
+
+                    if (crKeywordOr != null && crJobTitle == null && crDateBetween == null)
+                    {
+                        crAllOr = crKeywordOr;
+                    }
+                    if (crKeywordOr != null & crJobTitle != null && crDateBetween == null)
+                    {
+                        crAllOr = Restrictions.Disjunction()
+                            .Add(crKeywordOr)
+                            .Add(crJobTitle);
+                    }
+                    
+                    if(crKeywordOr==null && crJobTitle != null && crDateBetween != null)
+                    {
+                        crAllOr = Restrictions.Disjunction()
+                           .Add(crJobTitle)
+                           .Add(crDateBetween);
+                    }
+
+                    if (crKeywordOr == null && crJobTitle == null && crDateBetween != null)
+                    {
+                        crAllOr = Restrictions.Disjunction()
+                           .Add(crDateBetween);
+                    }
+                    if (crKeywordOr == null && crJobTitle != null && crDateBetween == null)
+                    {
+                        crAllOr = Restrictions.Disjunction()
+                           .Add(crJobTitle);
+                    }
 
                     var query = session.CreateCriteria<Company>("c")
-                        .Fetch(SelectMode.Fetch,"c.Employees");
+                        .Fetch(SelectMode.Fetch, "c.Employees");
                     query.CreateCriteria("c.Employees", "e");
-                        //    .Add(andRestriction);
-                        
-                    query.Add(orRestriction);
-                    
-                    var queryRes = query.List<Company>().ToList<Company>();
-                    
-                    serviceOperationResult.CompanyList.AddRange(queryRes);
 
+                    query.Add(crAllOr);
+
+                    var queryRes = query.List<Company>().ToList<Company>();
+                    serviceOperationResult.CompanyList.AddRange(queryRes);
                 }
             }
             catch
