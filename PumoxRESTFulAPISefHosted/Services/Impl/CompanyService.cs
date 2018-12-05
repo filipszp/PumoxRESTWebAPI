@@ -6,14 +6,13 @@ using RESTFulAPIConsole.Model;
 using System;
 using System.Linq;
 
-
 namespace RESTFulAPIConsole.Services
 {
-    /// <summary>
-    /// Klasa servisowa obsługująca logikę biznesową operacji z kontrolera
-    /// </summary>
-    public class CompanyService : ICompanyService<Company> //AbstractService<Company>,
+    /// <summary>Klasa servisowa obsługująca logikę biznesową operacji z kontrolera</summary>
+    public class CompanyService : ICompanyService<Company>
     {
+        /// <summary>Tworzenie encji Company</summary>
+        /// <param name="entityToAdd">Company</param>
         public ServiceOperationResult CreateCompany(Company entityToAdd)
         {
             var serviceOperationResult = new ServiceOperationResult();
@@ -45,6 +44,9 @@ namespace RESTFulAPIConsole.Services
                 serviceOperationResult.Message = "All fields in Company object are requied";
             return serviceOperationResult;
         }
+        /// <summary>Aktualizacja encji Company</summary>
+        /// <param name="entityToPersist">Encja Company do aktualizacji</param>
+        /// <param name="id">Id encji Company do edycji</param>
         public ServiceOperationResult UpdateCompany(Company entityToPersist, Int64 id)
         {
             var serviceOperationResult = new ServiceOperationResult();
@@ -100,6 +102,8 @@ namespace RESTFulAPIConsole.Services
             }
             return serviceOperationResult;
         }
+        /// <summary>Usuwanie encji Company</summary>
+        /// <param name="id">Id Company do usunięcia</param>
         public ServiceOperationResult DeleteCompanyWithEmployees(Int64 id)
         {
             var serviceOperationResult = new ServiceOperationResult();
@@ -136,6 +140,8 @@ namespace RESTFulAPIConsole.Services
             }
             return serviceOperationResult;
         }
+        /// <summary>Wyszukiwanie encji Company</summary>
+        /// <param name="searchCriteria">Kryteria wyszukiwania encji Company</param>
         public ServiceOperationResult SearchCompanies(CompanySearchCriteria searchCriteria)
         {
             var serviceOperationResult = new ServiceOperationResult();
@@ -144,26 +150,24 @@ namespace RESTFulAPIConsole.Services
                 using (var session = NHibernateHelper.OpenSession())
                 {
                     ICriterion crCompanyName, crFirstName, crLastName;
-
                     ICriterion crKeywordOr = null;
                     ICriterion crDateBetween = null;
                     ICriterion crJobTitle = null;
-
                     ICriterion crAllOr = null;
 
                     if (!String.IsNullOrEmpty(searchCriteria.Keyword))
                     {
-                        crCompanyName = Restrictions.Like("c.CompanyName", searchCriteria.Keyword);
-                        crFirstName = Restrictions.Like("e.FirstName", searchCriteria.Keyword);
-                        crLastName = Restrictions.Like("e.LastName", searchCriteria.Keyword);
+                        crCompanyName = Restrictions.Like("c.CompanyName", "%" + searchCriteria.Keyword +"%");
+                        crFirstName = Restrictions.Like("e.FirstName", "%" + searchCriteria.Keyword + "%");
+                        crLastName = Restrictions.Like("e.LastName", "%" + searchCriteria.Keyword + "%");
                         crKeywordOr = Restrictions.Disjunction()
                             .Add(crCompanyName)
                             .Add(crFirstName)
                             .Add(crLastName);
                     }
-                    if (!String.IsNullOrEmpty(searchCriteria.EmployeeJobTitles))
+                    if (!String.IsNullOrEmpty(searchCriteria.EmployeeJobTitles.ToString()))
                         crJobTitle = Restrictions.Eq("e.JobTitle", searchCriteria.EmployeeJobTitles);
-                    
+
                     if (searchCriteria.EmployeeDateOfBirthFrom.HasValue && searchCriteria.EmployeeDateOfBirthTo.HasValue)
                         crDateBetween = Restrictions.Between("e.DateOfBirth", searchCriteria.EmployeeDateOfBirthFrom.Value, searchCriteria.EmployeeDateOfBirthTo.Value);
 
@@ -174,7 +178,6 @@ namespace RESTFulAPIConsole.Services
                             .Add(crJobTitle)
                             .Add(crDateBetween);
                     }
-
                     if (crKeywordOr != null && crJobTitle == null && crDateBetween == null)
                     {
                         crAllOr = crKeywordOr;
@@ -185,14 +188,18 @@ namespace RESTFulAPIConsole.Services
                             .Add(crKeywordOr)
                             .Add(crJobTitle);
                     }
-                    
-                    if(crKeywordOr==null && crJobTitle != null && crDateBetween != null)
+                    if (crKeywordOr != null && crJobTitle == null && crDateBetween != null)
+                    {
+                        crAllOr = Restrictions.Disjunction()
+                           .Add(crKeywordOr)
+                           .Add(crDateBetween);
+                    }
+                    if (crKeywordOr == null && crJobTitle != null && crDateBetween != null)
                     {
                         crAllOr = Restrictions.Disjunction()
                            .Add(crJobTitle)
                            .Add(crDateBetween);
                     }
-
                     if (crKeywordOr == null && crJobTitle == null && crDateBetween != null)
                     {
                         crAllOr = Restrictions.Disjunction()
@@ -203,15 +210,13 @@ namespace RESTFulAPIConsole.Services
                         crAllOr = Restrictions.Disjunction()
                            .Add(crJobTitle);
                     }
-
                     var query = session.CreateCriteria<Company>("c")
                         .Fetch(SelectMode.Fetch, "c.Employees");
                     query.CreateCriteria("c.Employees", "e");
-
                     query.Add(crAllOr);
 
-                    var queryRes = query.List<Company>().ToList<Company>();
-                    serviceOperationResult.CompanyList.AddRange(queryRes);
+                    var companySearchList = query.List<Company>().ToList<Company>();
+                    companyWrapper(serviceOperationResult, companySearchList);
                 }
             }
             catch
@@ -220,19 +225,31 @@ namespace RESTFulAPIConsole.Services
             }
             return serviceOperationResult;
         }
-
+        /// <summary>Pobiera wszystkie Company</summary>
+        /// <returns>ServiceOperationResult</returns>
         public ServiceOperationResult GetAllCompanies()
         {
             var serviceOperationResult = new ServiceOperationResult();
             using (var session = NHibernateHelper.OpenSession())
             {
-                var list = session.Query<Company>()
+                var companyList = session.Query<Company>()
                     .Fetch(t => t.Employees)
-                    .OrderByDescending(t => t.Id)
+                    .OrderBy(t => t.CompanyName)
                     .ToList<Company>();
-                serviceOperationResult.CompanyList.AddRange(list);
+                companyWrapper(serviceOperationResult, companyList);
             }
             return serviceOperationResult;
+        }
+
+        #region Metody prywatne Utils
+        private static void companyWrapper(ServiceOperationResult serviceOperationResult, System.Collections.Generic.List<Company> companyList)
+        {
+            foreach (var company in companyList)
+            {
+                var wr = new CompanyWrapper();
+                wr.WrappCompany(company);
+                serviceOperationResult.CompanyWrappers.Add(wr);
+            }
         }
 
         private void deleteEmployeesFromCompany(ISession session, Company company)
@@ -243,6 +260,7 @@ namespace RESTFulAPIConsole.Services
                     .ExecuteUpdate();
             }
         }
+        #endregion
 
     }
 }

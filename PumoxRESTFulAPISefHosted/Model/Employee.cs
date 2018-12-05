@@ -13,8 +13,8 @@ namespace RESTFulAPIConsole.Model
         public virtual string LastName { get; set; }
         public virtual System.DateTime DateOfBirth { get; set; }
         public virtual Int64 Company_Id { get; set; }
-        public virtual JobTitleEnum JobTitle { get; set; }
-    
+        public virtual JobTitleEnum JobTitle{ get; set; }
+
         public class EmployeeMap : ClassMap<Employee>
         {
             public EmployeeMap()
@@ -31,8 +31,7 @@ namespace RESTFulAPIConsole.Model
         }
     }
 
-    public enum JobTitleEnum
-    {
+    public enum JobTitleEnum {
         Administrator,
         Developer,
         Architect,

@@ -13,21 +13,13 @@ namespace RESTFulAPIConsole.Controller
     /// <summary>
     /// RESTFul WebAPI Controller
     /// </summary>
-    /// 
     [BasicAuthenticationFilter]
     public class CompanyController : ApiController
     {
         private CompanyService companyService = new CompanyService();
 
-        [BasicAuthenticationFilter(true)]
-        [HttpGet]
-        [Route("GetCompanies")]
-        public IList<Company> GetCompanies()
-        {
-            Console.WriteLine("[HttpGet] -> /company/GetCompanies");
-            return companyService.GetAllCompanies().CompanyList;
-        }
-
+        /// <summary>Tworzenie encji Company i listy Employees</summary>
+        /// <param name="company">Obiekt klasy Company</param>
         [BasicAuthenticationFilter(true)]
         [HttpPost]
         public HttpResponseMessage Create([FromBody]Company company)
@@ -42,6 +34,9 @@ namespace RESTFulAPIConsole.Controller
             return response;
         }
 
+        /// <summary>Aktualizacja encji Company i Employee</summary>
+        /// <param name="Id">Id Company do edycji</param>
+        /// <param name="company">Obiekt klasy Company</param>
         [BasicAuthenticationFilter(true)]
         [HttpPut]
         [Route("company/update/{id}", Name ="Id")]
@@ -58,6 +53,8 @@ namespace RESTFulAPIConsole.Controller
 
         }
 
+        /// <summary>Usuwanie encji Company</summary>
+        /// <param name="Id">Id Company do usunięcia wraz z podpiętymi Employees</param>
         [BasicAuthenticationFilter(true)]
         [HttpDelete]
         [Route("company/delete/{id}", Name = "Id")]
@@ -74,21 +71,41 @@ namespace RESTFulAPIConsole.Controller
 
         }
 
+        /// <summary>Wyszukiwanie encji Company</summary>
+        /// <param name="criteria">Search kryteria wyszukiwnia</param>
         [BasicAuthenticationFilter(false)]
         [HttpPost]
         [Route("company/search")]
         public HttpResponseMessage Search([FromBody]CompanySearchCriteria criteria)
         {
             Console.WriteLine("[HttpDelete] -> /company/search");
-            //Console.WriteLine
+            Console.WriteLine(criteria.ToString());
             var response = new HttpResponseMessage();
             var serviceOperationResult = companyService.SearchCompanies(criteria);
             if (serviceOperationResult.Result)
-                response = Request.CreateResponse(HttpStatusCode.OK, serviceOperationResult.CompanyList);
+                response = Request.CreateResponse<List<CompanyWrapper>>(HttpStatusCode.OK, serviceOperationResult.CompanyWrappers);
             else
                 response = Request.CreateErrorResponse(HttpStatusCode.BadRequest, serviceOperationResult.Message);
             return response;
 
         }
+
+        /// <summary>Pobieranie wszystkich Company</summary>
+        /// <returns>HttpResponseMessage</returns>
+        [BasicAuthenticationFilter(true)]
+        [HttpGet]
+        [Route("company/getcompanies")]
+        public HttpResponseMessage GetCompanies()
+        {
+            Console.WriteLine("[HttpGet] -> /company/GetCompanies");
+            var response = new HttpResponseMessage();
+            var serviceOperationResult = companyService.GetAllCompanies();
+            if (serviceOperationResult.Result)
+                response = Request.CreateResponse<List<CompanyWrapper>>(HttpStatusCode.OK, serviceOperationResult.CompanyWrappers);
+            else
+                response = Request.CreateErrorResponse(HttpStatusCode.BadRequest, serviceOperationResult.Message);
+            return response;
+        }
+
     }
 }

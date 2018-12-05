@@ -9,26 +9,23 @@ using System.Web.Http.Filters;
 
 namespace PumoxRESTFulAPI.Filters.Filters
 {
+    /// <summary>Security REST WebAPI</summary>
+    ///<example>Adnotacja na metodzie kontrolera<code title="nieaktywny">[BasicAuthenticationFilter(false)]</code></example>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class BasicAuthenticationFilter : AuthorizationFilterAttribute
     {
         private readonly bool _isActive = true;
 
-        /// <summary>
-        /// Public default Constructor
-        /// </summary>
         public BasicAuthenticationFilter()
         {
         }
-
         public BasicAuthenticationFilter(bool isActive)
         {
             _isActive = isActive;
         }
-        
-
         public override void OnAuthorization(HttpActionContext actionContext)
         {
+            //
             if (!_isActive) return;
 
             var authHeader = actionContext.Request.Headers.Authorization;

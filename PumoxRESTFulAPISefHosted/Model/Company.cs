@@ -6,7 +6,7 @@ using System.Linq;
 namespace RESTFulAPIConsole.Model
 {
     ///<summary>
-    ///Encja  tabeli Company
+    ///Encja  tabeli <see cref="Company"/>
     ///</summary>
     public class Company
     {
